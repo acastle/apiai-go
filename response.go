@@ -35,7 +35,7 @@ type Result struct {
 	Contexts         []Context         `json:"contexts"`
 	Fulfillment      Fulfillment       `json:"fulfillment"`
 	Metadata         Metadata          `json:"metadata"`
-	Parameters       map[string]string `json:"parameters"`
+	Parameters       map[string]interface{} `json:"parameters"`
 	ResolvedQuery    string            `json:"resolvedQuery"`
 	Score            float32           `json:"score"`
 	Source           string            `json:"source"`
