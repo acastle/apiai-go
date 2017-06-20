@@ -1,5 +1,7 @@
 package apiaigo
 
+import "encoding/json"
+
 // Metadata contains data on intents and contexts.
 type Metadata struct {
 	IntentID                  string `json:"intentId"`
@@ -35,10 +37,30 @@ type Result struct {
 	Contexts         []Context         `json:"contexts"`
 	Fulfillment      Fulfillment       `json:"fulfillment"`
 	Metadata         Metadata          `json:"metadata"`
-	Parameters       map[string]interface{} `json:"parameters"`
+	Parameters       map[string]ParameterValue `json:"parameters"`
 	ResolvedQuery    string            `json:"resolvedQuery"`
 	Score            float32           `json:"score"`
 	Source           string            `json:"source"`
+}
+
+// ParameterValues can either be strings or string arrays
+type ParameterValue struct {
+	Value string
+	Values []string
+}
+
+func (p *ParameterValue) UnmarshalJSON(b []byte) (err error) {
+	s, sl := "", []string{}
+	if err = json.Unmarshal(b, &s); err == nil {
+		*p = ParameterValue{ Value: s }
+		return
+	}
+	if err = json.Unmarshal(b, &sl); err == nil {
+		*p = ParameterValue{ Values: sl }
+		return
+	}
+
+	return
 }
 
 // ResponseStruct wraps the response from API.ai. Please see. https://docs.api.ai/docs/query#response
